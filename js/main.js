@@ -30,7 +30,7 @@ function filtrar(){
     let partiesCheck=document.querySelectorAll(".parties:checked");
     let select=document.querySelector("#states-select");
     let value = select.value;
-    states = [];
+    //states = [];
     partiesCheck.forEach(check => 
         members.filter(member => 
             member.party === check.value && (statesFull[member.state] === value || value === "all")).forEach(member => {
@@ -41,30 +41,27 @@ function filtrar(){
                 if(states.indexOf(statesFull[member.state]) == -1){
                     states.push(statesFull[member.state]);
                 }
-            })
-            )   
-            let option;
-            select.innerHTML = "<option value='all'>all</option>";
-            for(let i = 0; i < states.length; i++){
-                option = document.createElement("option");
-                option.setAttribute("value", states[i]);
-                option.innerHTML = states[i];
-                select.appendChild(option);
-            }
-            select.value = value;
-            
-        }
+            }));
+    let option;
+    select.innerHTML = "<option value='all'>all</option>";
+    for(let i = 0; i < states.length; i++){
+        option = document.createElement("option");
+        option.setAttribute("value", states[i]);
+        option.innerHTML = states[i];
+        select.appendChild(option);
+    }
+    select.value = value;
+}
+
+document.querySelector("#rep").addEventListener("click",filtrar);
+document.querySelector("#dem").addEventListener("click",filtrar);
+document.querySelector("#ind").addEventListener("click",filtrar);
+document.querySelector("#states-select").addEventListener("change",filtrar);
+filtrar();
+        
+// Holaaa dieguitooo <]:{V
         
         
-        document.querySelector("#rep").addEventListener("click",filtrar);
-        document.querySelector("#dem").addEventListener("click",filtrar);
-        document.querySelector("#ind").addEventListener("click",filtrar);
-        document.querySelector("#states-select").addEventListener("change",filtrar);
-        filtrar();
-        
-        // Holaaa dieguitooo <]:{V
-        
-        
-        /******************************/
+/******************************/
         
         
