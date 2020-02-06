@@ -13,7 +13,7 @@ let stats = {
 }
 
 let members = data.results[0].members;
-
+// ILU <3
 let votesRep = 0;
 let votesDem = 0;
 let votesInd = 0;
@@ -64,32 +64,33 @@ function compareVotesWPartyInverse(memberA, memberB){
     return memberB.votes_with_party_pct - memberA.votes_with_party_pct;
 }
 
-function agregarResto(index,source,array){
-    let valueAct = source[index].missed_votes_pct;
+function agregarResto(index,source,array,filtro){
+    console.log(source[index]);
+    let valueAct = (source[index])[filtro];
     for(let i = index + 1; i < source.length; i++){
-        if(source[i].missed_votes_pct == valueAct){
+        if(source[i][filtro] == valueAct){
             array.push(source[i]);
         }
     }
 }
 
-function cargarDatos(arraySource,arrayReducido){
+function cargarDatos(arraySource,arrayReducido,filtro){
     for(let i = 0; i < tenPct; i++){
         arrayReducido.push(arraySource[i]);
         if(i == tenPct-1){
-            //agregarResto(i,arraySource,arrayReducido);
+            //agregarResto(i,arraySource,arrayReducido,filtro);
         }
     }
 }
 
 let membersMissedOrd = members.sort(compareMissedVotes);
-cargarDatos(membersMissedOrd,stats.mostEngaged);
+cargarDatos(membersMissedOrd,stats.mostEngaged,"missed_votes_pct");
 let membersMissedOrdInv = members.sort(compareMissedVotesInverse);
-cargarDatos(membersMissedOrdInv,stats.leastEngaged);
+cargarDatos(membersMissedOrdInv,stats.leastEngaged,"missed_votes_pct");
 let membersLoyalOrd = members.sort(compareVotesWParty);
-cargarDatos(membersLoyalOrd,stats.leastLoyal);
+cargarDatos(membersLoyalOrd,stats.leastLoyal,"votes_with_party_pct");
 let membersLoyalOrdInv = members.sort(compareVotesWPartyInverse);
-cargarDatos(membersLoyalOrdInv,stats.mostLoyal);
+cargarDatos(membersLoyalOrdInv,stats.mostLoyal,"votes_with_party_pct");
 
 function createTbodyAttendance(tbodyIN, arrayIN){
     let tbody = tbodyIN;
