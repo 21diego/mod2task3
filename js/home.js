@@ -1,13 +1,13 @@
 function change(){
   let read = document.querySelector("#read");
   
-  if(read.getAttribute("read") == "true"){
+  if(read.dataset.change == "true"){
     read.innerHTML = "<<< Read less";
-    read.setAttribute("read","false");
+    read.dataset.change = false;
   }
   else {
     read.innerHTML = "Read more >>>";
-    read.setAttribute("read","true");
+    read.dataset.change = true;
   }
 }
 

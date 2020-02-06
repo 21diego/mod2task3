@@ -49,93 +49,79 @@ row.innerHTML = `<td>Independant</td><td>${stats.totalInd}</td><td>${(stats.vote
 row = tbody.insertRow(-1);
 row.innerHTML = `<td>Total</td><td>${stats.totalMembers}</td><td></td>`;
 
-
+//Armando lista filtrada para Attendance
+//Funcion de comparacion basado en los votos faltantes
 function compareMissedVotes(memberA, memberB){
     return memberA.missed_votes_pct - memberB.missed_votes_pct;
 }
-
+function compareMissedVotesInverse(memberA,memberB){
+    return memberB.missed_votes_pct - memberA.missed_votes_pct;
+}
 function compareVotesWParty(memberA, memberB){
     return memberA.votes_with_party_pct - memberB.votes_with_party_pct;
 }
+function compareVotesWPartyInverse(memberA, memberB){
+    return memberB.votes_with_party_pct - memberA.votes_with_party_pct;
+}
 
-let datosOrd = members.sort(compareMissedVotes);
-
-/*function addRestTop(index,array){
-    let valueAct = datosOrd[index].missed_votes_pct;
-    for(let i = index + 1; i < datosOrd.length; i++){
-        if(datosOrd[i].missed_votes_pct == valueAct){
-            array.push(datosOrd[i]);
+function agregarResto(index,source,array){
+    let valueAct = source[index].missed_votes_pct;
+    for(let i = index + 1; i < source.length; i++){
+        if(source[i].missed_votes_pct == valueAct){
+            array.push(source[i]);
         }
     }
 }
 
-function addRestBot(index,array){
-    let valueAct = datosOrd[index].missed_votes_pct;
-    
-}*/
-
-for(let i = 0; i < tenPct; i++){
-    stats.mostEngaged.push(datosOrd[i]);
-    if(i == tenPct-1){
-        //addRestBot(i,stats.mostEngaged);
+function cargarDatos(arraySource,arrayReducido){
+    for(let i = 0; i < tenPct; i++){
+        arrayReducido.push(arraySource[i]);
+        if(i == tenPct-1){
+            //agregarResto(i,arraySource,arrayReducido);
+        }
     }
 }
 
-for(let i = datosOrd.length -1; i >= (datosOrd.length - tenPct); i--){
-    stats.leastEngaged.push(datosOrd[i]);
-    if(i == datosOrd.length - tenPct){}
-}
+let membersMissedOrd = members.sort(compareMissedVotes);
+cargarDatos(membersMissedOrd,stats.mostEngaged);
+let membersMissedOrdInv = members.sort(compareMissedVotesInverse);
+cargarDatos(membersMissedOrdInv,stats.leastEngaged);
+let membersLoyalOrd = members.sort(compareVotesWParty);
+cargarDatos(membersLoyalOrd,stats.leastLoyal);
+let membersLoyalOrdInv = members.sort(compareVotesWPartyInverse);
+cargarDatos(membersLoyalOrdInv,stats.mostLoyal);
 
-if(document.querySelector("#table-least>tbody")){
-    tbody = document.querySelector("#table-least>tbody");
-    stats.leastEngaged.forEach(member => {
+function createTbodyAttendance(tbodyIN, arrayIN){
+    let tbody = tbodyIN;
+    arrayIN.forEach(m => {
         let row = tbody.insertRow(-1);
-        row.innerHTML = `<td>${member.last_name}, ${member.first_name} ${member.middle_name?member.middle_name:""}</td>`
-        +`<td>${member.missed_votes}</td><td>${member.missed_votes_pct.toFixed(2)}%</td>`;
+        row.innerHTML = `<td>${m.last_name}, ${m.first_name} ${m.middle_name?m.middle_name:""}</td>`
+        +`<td>${m.missed_votes}</td><td>${m.missed_votes_pct.toFixed(2)}%</td>`;
     })
 }
 
+function createTbodyLoyal(tbodyIN, arrayIN){
+    let tbody = tbodyIN;
+    arrayIN.forEach(m => {
+        let row = tbody.insertRow(-1);
+        row.innerHTML = `<td>${m.last_name}, ${m.first_name} ${m.middle_name?m.middle_name:""}</td>`
+        +`<td>${Math.round((m.total_votes * m.votes_with_party_pct)/100)}</td><td>${m.votes_with_party_pct.toFixed(2)}%</td>`;
+    })
+}
 
+let tableLeast = document.querySelector("#table-least>tbody");
+if(tableLeast){
+    createTbodyAttendance(tableLeast, stats.leastEngaged);
+}
+let tableMost = document.querySelector("#table-most>tbody");
 if(document.querySelector("#table-most>tbody")){
-    tbody = document.querySelector("#table-most>tbody");
-    stats.mostEngaged.forEach(member => {
-        let row = tbody.insertRow(-1);
-        row.innerHTML = `<td>${member.last_name}, ${member.first_name} ${member.middle_name?member.middle_name:""}</td>`
-        +`<td>${member.missed_votes}</td><td>${member.missed_votes_pct.toFixed(2)}%</td>`;
-    })
+    createTbodyAttendance(tableMost, stats.mostEngaged);
 }
-
-
-let datosOrd2 = members.sort(compareVotesWParty);
-
-
-for(let i = 0; i < tenPct; i++){
-    stats.mostLoyal.push(datosOrd2[i]);
-    if(i == tenPct-1){
-        //addRestBot(i,stats.mostEngaged);
-    }
+let tableLeastLoyal = document.querySelector("#table-least-loyal>tbody");
+if(tableLeastLoyal){
+    createTbodyLoyal(tableLeastLoyal, stats.leastLoyal);
 }
-
-for(let i = datosOrd2.length -1; i >= (datosOrd2.length - tenPct); i--){
-    stats.leastLoyal.push(datosOrd[i]);
-    if(i == datosOrd2.length - tenPct){}
-}
-
-if(document.querySelector("#table-least-loyal>tbody")){
-    tbody = document.querySelector("#table-least-loyal>tbody");
-    stats.leastLoyal.forEach(member => {
-        let row = tbody.insertRow(-1);
-        row.innerHTML = `<td>${member.last_name}, ${member.first_name} ${member.middle_name?member.middle_name:""}</td>`
-        +`<td>${member.missed_votes}</td><td>${member.missed_votes_pct.toFixed(2)}%</td>`;
-    })
-}
-
-if(document.querySelector("#table-most-loyal>tbody")){
-    tbody = document.querySelector("#table-most-loyal>tbody");
-    stats.mostLoyal.forEach(member => {
-        let row = tbody.insertRow(-1);
-        row.innerHTML = `<td>${member.last_name}, ${member.first_name} ${member.middle_name?member.middle_name:""}</td>`
-        +`<td>${member.missed_votes}</td><td>${member.missed_votes_pct.toFixed(2)}%</td>`;
-    })
-    
+let tableMostLoyal = document.querySelector("#table-most-loyal>tbody");
+if(tableMostLoyal){
+    createTbodyLoyal(tableMostLoyal, stats.mostLoyal);
 }
