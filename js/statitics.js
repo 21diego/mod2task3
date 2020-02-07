@@ -74,12 +74,18 @@ function agregarResto(index,source,array,filtro){
     }
 }
 
-function cargarDatos(arraySource,arrayReducido,filtro){
-    for(let i = 0; i < tenPct; i++){
-        arrayReducido.push(arraySource[i]);
-        if(i == tenPct-1){
-            //agregarResto(i,arraySource,arrayReducido,filtro);
+function cargarDatos(source, reduce, filter,votes){
+    let i = 0;
+    let condicion = tenPct;
+    while(i<condicion || source[i][filter] == source[i-1][filter]){
+        if(source[i].total_votes == 0){
+            condicion++;
         }
+        else {
+            reduce.push(source[i]);
+        }
+        
+        i++;
     }
 }
 
