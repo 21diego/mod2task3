@@ -64,27 +64,11 @@ function compareVotesWPartyInverse(memberA, memberB){
     return memberB.votes_with_party_pct - memberA.votes_with_party_pct;
 }
 
-function agregarResto(index,source,array,filtro){
-    console.log(source[index]);
-    let valueAct = (source[index])[filtro];
-    for(let i = index + 1; i < source.length; i++){
-        if(source[i][filtro] == valueAct){
-            array.push(source[i]);
-        }
-    }
-}
-
 function cargarDatos(source, reduce, filter,votes){
     let i = 0;
     let condicion = tenPct;
     while(i<condicion || source[i][filter] == source[i-1][filter]){
-        if(source[i].total_votes == 0){
-            condicion++;
-        }
-        else {
-            reduce.push(source[i]);
-        }
-        
+        source[i].total_votes == 0?condicion++:reduce.push(source[i]);
         i++;
     }
 }
